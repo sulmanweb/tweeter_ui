@@ -1,34 +1,14 @@
 <template>
   <div>
-    <h1 class="text-center">Sign Up Page</h1>
+    <h1 class="text-center">Sign In Page</h1>
     <div class="container">
       <div class="row">
         <div class="col-md-6 col-md-offset-3">
           <form @submit.prevent="submitForm">
             <div class="alert alert-danger" role="alert" v-if="formErrors.length > 0">
               <ul>
-                <li v-for="error in formErrors">{{error}}</li>
+                <li v-for="(error, index) in formErrors" :key="index">{{error}}</li>
               </ul>
-            </div>
-            <div class="form-group">
-              <label for="name">Name</label>
-              <input
-                type="text"
-                class="form-control"
-                id="name"
-                placeholder="Name"
-                v-model="formData.name"
-              >
-            </div>
-            <div class="form-group">
-              <label for="username">Username</label>
-              <input
-                type="text"
-                class="form-control"
-                id="username"
-                placeholder="Username"
-                v-model="formData.username"
-              >
             </div>
             <div class="form-group">
               <label for="exampleInputEmail1">Email address</label>
@@ -50,16 +30,6 @@
                 v-model="formData.password"
               >
             </div>
-            <div class="form-group">
-              <label for="bio">Bio</label>
-              <input
-                type="text"
-                class="form-control"
-                id="bio"
-                placeholder="Bio"
-                v-model="formData.bio"
-              >
-            </div>
             <button type="submit" class="btn btn-default">Submit</button>
           </form>
         </div>
@@ -70,7 +40,7 @@
 
 <script>
 export default {
-  name: "SignUp",
+  name: "SignIn",
   data() {
     return {
       formData: {},
@@ -80,10 +50,11 @@ export default {
   methods: {
     submitForm() {
       this.$http
-        .post("http://localhost:3000/sign_up", this.formData)
-        .then(() => {
+        .post("http://localhost:3000/sign_in", this.formData)
+        .then(res => {
+          localStorage.setItem("token", res.data.token);
           this.formData = {};
-          this.$router.push({ name: "sign_in" });
+          this.$router.push({ name: "home" });
         })
         .catch(error => {
           this.formErrors = error.response.data.errors;
